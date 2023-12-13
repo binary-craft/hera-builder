@@ -1,0 +1,20 @@
+description = "Cloud Native builder for C++"
+
+[[buildpacks]]
+  uri = "docker://docker.io/pimhuisman/conanpack:0.1.0"
+  version = "0.1.0"
+
+[[order]]
+  [[order.group]]
+    id = "pimhuisman/conanpack"
+
+[build]
+  image = "pimhuisman/hera-builder:jammy"
+[run]
+  [[run.images]]
+    image = "pimhuisman/hera-runner:jammy"
+
+[stack]
+  id = "com.github.pimhuisman.stacks.hera"
+  build-image = "pimhuisman/hera-builder:jammy"
+  run-image = "pimhuisman/hera-runner:jammy"
