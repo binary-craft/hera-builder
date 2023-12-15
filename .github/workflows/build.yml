@@ -9,7 +9,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      BUILDER_NAME: cppbuilder
+      BUILDER_NAME: hera-builder
       BUILDER_VERSION: jammy
     steps:
       - name: Check out the code
