@@ -78,5 +78,27 @@ jobs:
       - name: Inspect built image
         run: docker inspect ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
 
-      #- name: Push builder ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} to Docker hub
-      #  run: docker push ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
+      - name: Push builder ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} to Docker hub
+        run: docker push ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
+
+  create-manifest:
+    name: Create manifest
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      BUILDER_NAME: hera-builder
+      BUILDER_VERSION: jammy
+    steps:
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Create manifest
+        run: docker manifest create ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} \
+          --amend ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}-amd64 \
+          --amend ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}-arm64
+
+      - name: Push manifest
+        run: docker manifest push ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
