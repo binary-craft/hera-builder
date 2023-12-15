@@ -38,5 +38,8 @@ jobs:
       - name: Create builder ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
         run: pack builder create ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} --config ./builder.toml
 
+      - name: Inspect built image
+        run: docker inspect ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
+
       #- name: Push builder ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} to Docker hub
       #  run: docker push ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
