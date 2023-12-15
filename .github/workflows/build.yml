@@ -43,12 +43,12 @@ jobs:
           mkdir -p "${HOME}"/bin
           echo "PATH=${HOME}/bin:${PATH}" >> "${GITHUB_ENV}"
           
-          if [ $(os) = "macOS" ]; then
-             PLATFORM="macos"
+          if [ "$RUNNER_OS" == "Linux" ]; then
+             PLATFORM="linux"
           else
-            PLATFORM="linux"
+             PLATFORM="macos"
           fi
-          if [ $(arch) = "aarch64" ]; then
+          if [ "$RUNNER_ARCH" == "ARM64" ]; then
              PLATFORM="${PLATFORM}-arm64"
           fi
           
