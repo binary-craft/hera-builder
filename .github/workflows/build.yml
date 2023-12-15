@@ -7,10 +7,19 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+        include:
+          - arch: amd64
+            os: ubuntu-latest
+          - arch: arm64
+            os: macos-latest-xlarge
+    runs-on: ${{ matrix.os }}
     env:
       BUILDER_NAME: hera-builder
       BUILDER_VERSION: jammy
+      BUILDER_TAG: ${{ env.BUILDER_VERSION }}-${{ matrix.arch }}
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
@@ -24,8 +33,8 @@ jobs:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Create builder ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
-        run: pack builder create ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} --config ./builder.toml
+      - name: Create builder ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_TAG }}
+        run: pack builder create ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_TAG }} --config ./builder.toml
 
-      - name: Push builder ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} to Docker hub
-        run: docker push ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
+      #- name: Push builder ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} to Docker hub
+      #  run: docker push ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
