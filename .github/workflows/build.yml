@@ -10,7 +10,12 @@ jobs:
     strategy:
       matrix:
         arch: [amd64, arm64]
-    runs-on: ubuntu-latest
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: [self-hosted, macOS]
+    runs-on: ${{ matrix.runner }}
     env:
       BUILDER_NAME: hera-builder
       BUILDER_VERSION: jammy-${{ matrix.arch }}
