@@ -69,12 +69,12 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Create manifest
-        run: docker manifest create ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} \
-          ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}-amd64 \
-          ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}-arm64
+        run: docker manifest create ${{ vars.DOCKER_HOST }}/${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }} \
+          ${{ vars.DOCKER_HOST }}/${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}-amd64 \
+          ${{ vars.DOCKER_HOST }}/${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}-arm64
 
       - name: Inspect manifest
-        run: docker manifest inspect ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
+        run: docker manifest inspect ${{ vars.DOCKER_HOST }}/${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
 
       - name: Push manifest
-        run: docker manifest push ${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
+        run: docker manifest push ${{ vars.DOCKER_HOST }}/${{ vars.DOCKER_NAMESPACE }}/${{ env.BUILDER_NAME }}:${{ env.BUILDER_VERSION }}
