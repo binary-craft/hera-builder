@@ -21,7 +21,7 @@ jobs:
             runner: [self-hosted, macOS]
     runs-on: ${{ matrix.runner }}
     env:
-      BUILDER_MATRIX_IMAGE: ${{ env.BUILDER_IMAGE }-${{ matrix.arch }}
+      BUILDER_MATRIX_IMAGE: ${{ env.BUILDER_IMAGE }}-${{ matrix.arch }}
     steps:
       - name: Check out the code
         uses: actions/checkout@v4

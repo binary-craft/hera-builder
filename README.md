@@ -1,5 +1,5 @@
 # Cloud Native builder for C and C++
-[![Build](https://github.com/pim-huisman/hera-builder/actions/workflows/build.yml/badge.svg)](https://github.com/pim-huisman/hera-builder/actions/workflows/build.yml)
+[![Build and push](https://github.com/pim-huisman/hera-builder/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/pim-huisman/hera-builder/actions/workflows/build-and-push.yml)
 
 ## About
 This project is used to create a Cloud Native builder for C and C++.

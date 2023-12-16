@@ -13,7 +13,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      BUILDER_FULL_IMAGE: ${{ env.BUILDER_IMAGE }-amd64
+      BUILDER_FULL_IMAGE: ${{ env.BUILDER_IMAGE }}-amd64
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
