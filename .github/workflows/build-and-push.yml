@@ -20,8 +20,6 @@ jobs:
           - arch: arm64
             runner: [self-hosted, macOS]
     runs-on: ${{ matrix.runner }}
-    env:
-      BUILDER_MATRIX_IMAGE: ${{ env.BUILDER_IMAGE }}-${{ matrix.arch }}
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
@@ -35,22 +33,19 @@ jobs:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Create builder ${{ env.BUILDER_MATRIX_IMAGE }}
-        run: pack builder create ${{ env.BUILDER_MATRIX_IMAGE }} --config ./builder.toml
+      - name: Create builder ${{ env.BUILDER_IMAGE }}-${{ matrix.arch }}
+        run: pack builder create ${{ env.BUILDER_IMAGE }}-${{ matrix.arch }} --config ./builder.toml
 
       - name: Inspect built image
-        run: docker inspect ${{ env.BUILDER_MATRIX_IMAGE }}
+        run: docker inspect ${{ env.BUILDER_IMAGE }}-${{ matrix.arch }}
 
-      - name: Push builder ${{ env.BUILDER_MATRIX_IMAGE }} to Docker hub
-        run: docker push ${{ env.BUILDER_MATRIX_IMAGE }}
+      - name: Push builder ${{ env.BUILDER_IMAGE }}-${{ matrix.arch }} to Docker hub
+        run: docker push ${{ env.BUILDER_IMAGE }}-${{ matrix.arch }}
 
   create-manifest:
     name: Create manifest
     runs-on: ubuntu-latest
     needs: build
-    env:
-      BUILDER_IMAGE_WITH_HOST: ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }}
-      BUILDER_VERSION: jammy
     steps:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -58,11 +53,11 @@ jobs:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Create manifest ${{ env.BUILDER_IMAGE_WITH_HOST }}
-        run: docker manifest create ${{ env.BUILDER_IMAGE_WITH_HOST }} ${{ env.BUILDER_IMAGE_WITH_HOST }}-amd64 ${{ env.BUILDER_IMAGE_WITH_HOST }}-arm64
+      - name: Create manifest ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }}
+        run: docker manifest create ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }} ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }}-amd64 ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }}-arm64
 
       - name: Inspect manifest
-        run: docker manifest inspect ${{ env.BUILDER_IMAGE_WITH_HOST }}
+        run: docker manifest inspect ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }}
 
-      - name: Push manifest ${{ env.BUILDER_IMAGE_WITH_HOST }} to Docker hub
-        run: docker manifest push ${{ env.BUILDER_IMAGE_WITH_HOST }}
+      - name: Push manifest ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }} to Docker hub
+        run: docker manifest push ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }}

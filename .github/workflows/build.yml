@@ -12,8 +12,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    env:
-      BUILDER_FULL_IMAGE: ${{ env.BUILDER_IMAGE }}-amd64
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
@@ -21,8 +19,8 @@ jobs:
       - name: Set up pack
         run: bash scripts/setup-pack.sh
 
-      - name: Create builder ${{ env.BUILDER_FULL_IMAGE }}
-        run: pack builder create ${{ env.BUILDER_FULL_IMAGE }} --config ./builder.toml
+      - name: Create builder ${{ env.BUILDER_IMAGE }}-amd64
+        run: pack builder create ${{ env.BUILDER_IMAGE }}-amd64 --config ./builder.toml
 
       - name: Inspect built image
-        run: docker inspect ${{ env.BUILDER_FULL_IMAGE }}
+        run: docker inspect ${{ env.BUILDER_IMAGE }}-amd64
