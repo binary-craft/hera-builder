@@ -1,5 +1,6 @@
 # Cloud Native builder for C and C++
 [![Build and push](https://github.com/pim-huisman/hera-builder/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/pim-huisman/hera-builder/actions/workflows/build-and-push.yml)
+[![Check for base image updates](https://github.com/pim-huisman/hera-builder/actions/workflows/check-base-image-updates.yml/badge.svg)](https://github.com/pim-huisman/hera-builder/actions/workflows/check-base-image-updates.yml)
 
 ## About
 This project is used to create a Cloud Native builder for C and C++.
@@ -23,7 +24,9 @@ After the build has completed, the resulting images can be started:
 ```docker run --rm my-app ```
 
 ## Maintaining
-This project is aimed to have a straightforward maintenance by using all relevant automation that we can.
+This project is aimed to have a straightforward maintenance by using all relevant automation that we can. Automation is used for:
+- Building and pushing the builder on any relevant changes to the `main` branch.
+- Checking for upstream [Hera base images](https://github.com/pim-huisman/hera-images) updates and automatically integrating them.
 
 ## Contributing
 This project is open for any contributions that you might have. Bugfixes and feature enhancements are very welcome.

@@ -1,0 +1,22 @@
+name: Check for base image updates
+on:
+  schedule:
+    - cron: '45 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-updates:
+    name: Check for updates
+    runs-on: ubuntu-latest
+    outputs:
+      needs-updating: ${{ steps.check.outputs.needs-updating }}
+    steps:
+      - name: Check if update available
+        id: check
+        uses: lucacome/docker-image-update-checker@v1.2.1
+        with:
+          base-image: ${{ vars.DOCKER_NAMESPACE }}/hera-builder-base:jammy
+          image: ${{ vars.DOCKER_NAMESPACE }}/hera-builder:jammy
+          platforms: linux/amd64,linux/arm64
+        env:
+          DEBUG: true
