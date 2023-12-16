@@ -4,6 +4,9 @@ on:
     branches-ignore: [main]
     paths-ignore: ['**.md', '.gitignore', 'LICENSE']
   workflow_dispatch:
+env:
+  BUILDER_IMAGE: ${{ vars.DOCKER_NAMESPACE }}/hera-builder:jammy
+  PACK_VERSION: 0.32.1
 
 jobs:
   build:
@@ -18,26 +21,10 @@ jobs:
             runner: [self-hosted, macOS]
     runs-on: ${{ matrix.runner }}
     env:
-      BUILDER_NAME: hera-builder
-      BUILDER_VERSION: jammy-${{ matrix.arch }}
-      PACK_VERSION: 0.32.1
+      BUILDER_MATRIX_IMAGE: ${{ env.BUILDER_IMAGE }-${{ matrix.arch }}
     steps:
-      - name: Determine builder image name
-        run: echo "BUILDER_IMAGE=${{ vars.DOCKER_NAMESPACE }}/${BUILDER_NAME}:${BUILDER_VERSION}" >> $GITHUB_ENV
-
       - name: Check out the code
         uses: actions/checkout@v4
-
-      #- uses: docker/setup-qemu-action@v3
-      #  with:
-      #    platforms: linux/${{ matrix.arch }}
-
-      #- uses: docker/setup-buildx-action@v3
-      #  with:
-      #    platforms: linux/${{ matrix.arch }}
-
-      #- name: Set up pack
-      #  uses: buildpacks/github-actions/setup-pack@v5.5.1
 
       - name: Set up pack
         run: bash scripts/setup-pack.sh
@@ -48,37 +35,34 @@ jobs:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Create builder ${{ env.BUILDER_IMAGE }}
-        run: pack builder create ${{ env.BUILDER_IMAGE }} --config ./builder.toml
+      - name: Create builder ${{ env.BUILDER_MATRIX_IMAGE }}
+        run: pack builder create ${{ env.BUILDER_MATRIX_IMAGE }} --config ./builder.toml
 
       - name: Inspect built image
-        run: docker inspect ${{ env.BUILDER_IMAGE }}
+        run: docker inspect ${{ env.BUILDER_MATRIX_IMAGE }}
 
-      - name: Push builder ${{ env.BUILDER_IMAGE }} to Docker hub
-        run: docker push ${{ env.BUILDER_IMAGE }}
+      - name: Push builder ${{ env.BUILDER_MATRIX_IMAGE }} to Docker hub
+        run: docker push ${{ env.BUILDER_MATRIX_IMAGE }}
 
   create-manifest:
     name: Create manifest
     runs-on: ubuntu-latest
     needs: build
     env:
-      BUILDER_NAME: hera-builder
+      BUILDER_IMAGE_WITH_HOST: ${{ vars.DOCKER_HOST }}/${{ env.BUILDER_IMAGE }}
       BUILDER_VERSION: jammy
     steps:
-      - name: Determine builder image name
-        run: echo "BUILDER_IMAGE=${{ vars.DOCKER_HOST }}/${{ vars.DOCKER_NAMESPACE }}/${BUILDER_NAME}:${BUILDER_VERSION}" >> $GITHUB_ENV
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Create manifest ${{ env.BUILDER_IMAGE }}
-        run: docker manifest create ${{ env.BUILDER_IMAGE }} ${{ env.BUILDER_IMAGE }}-amd64 ${{ env.BUILDER_IMAGE }}-arm64
+      - name: Create manifest ${{ env.BUILDER_IMAGE_WITH_HOST }}
+        run: docker manifest create ${{ env.BUILDER_IMAGE_WITH_HOST }} ${{ env.BUILDER_IMAGE_WITH_HOST }}-amd64 ${{ env.BUILDER_IMAGE_WITH_HOST }}-arm64
 
       - name: Inspect manifest
-        run: docker manifest inspect ${{ env.BUILDER_IMAGE }}
+        run: docker manifest inspect ${{ env.BUILDER_IMAGE_WITH_HOST }}
 
-      - name: Push manifest ${{ env.BUILDER_IMAGE }} to Docker hub
-        run: docker manifest push ${{ env.BUILDER_IMAGE }}
+      - name: Push manifest ${{ env.BUILDER_IMAGE_WITH_HOST }} to Docker hub
+        run: docker manifest push ${{ env.BUILDER_IMAGE_WITH_HOST }}
