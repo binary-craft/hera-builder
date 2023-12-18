@@ -1,12 +1,28 @@
 description = "Cloud Native builder for C and C++"
 
 [[buildpacks]]
+  uri = "docker://docker.io/pimhuisman/cmakepack:0.1.0"
+  version = "0.1.0"
+
+[[buildpacks]]
   uri = "docker://docker.io/pimhuisman/conanpack:0.1.0"
+  version = "0.1.0"
+
+[[buildpacks]]
+  uri = "docker://docker.io/pimhuisman/mesonpack:0.1.0"
   version = "0.1.0"
 
 [[order]]
   [[order.group]]
     id = "pimhuisman/conanpack"
+
+[[order]]
+  [[order.group]]
+    id = "pimhuisman/mesonpack"
+
+[[order]]
+  [[order.group]]
+    id = "pimhuisman/cmakepack"
 
 [build]
   image = "pimhuisman/hera-builder-base:jammy"

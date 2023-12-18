@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Custom script to install pack. Needed because buildpacks/github-actions/setup-pack does not properly support anything other than Linux.
 
-set -euo pipefail
+set -eo pipefail
 
 mkdir -p "${HOME}"/bin
 echo "PATH=${HOME}/bin:${PATH}" >> "${GITHUB_ENV}"
