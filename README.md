@@ -14,6 +14,14 @@ See [Docker hub](https://hub.docker.com/r/pimhuisman/hera-builder).
 
 ```docker pull pimhuisman/hera-builder:<version>```
 
+## Supported tools and buildpacks
+The following tools are supported through these buildpacks:
+- [CMake](https://cmake.org) with [pim-huisman/cmakepack](https://github.com/pim-huisman/cmakepack)
+- [Conan](https://conan.io) with [pim-huisman/conanpack](https://github.com/pim-huisman/conanpack)
+- [Meson](https://mesonbuild.com) with [pim-huisman/mesonpack](https://github.com/pim-huisman/mesonpack)
+
+See the specific buildpacks for more details about the compilers, linkers and generators that they support.
+
 ## Building images with the builder
 To use the builder issue a command as follows:
 
