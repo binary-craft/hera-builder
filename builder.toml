@@ -1,36 +1,36 @@
 description = "Cloud Native builder for C and C++"
 
 [[buildpacks]]
-  uri = "docker://docker.io/pimhuisman/cmakepack:0.1.0"
+  uri = "docker://docker.io/bincraft/cmakepack:0.1.0"
   version = "0.1.0"
 
 [[buildpacks]]
-  uri = "docker://docker.io/pimhuisman/conanpack:0.1.0"
+  uri = "docker://docker.io/bincraft/conanpack:0.1.0"
   version = "0.1.0"
 
 [[buildpacks]]
-  uri = "docker://docker.io/pimhuisman/mesonpack:0.1.0"
+  uri = "docker://docker.io/bincraft/mesonpack:0.1.0"
   version = "0.1.0"
 
 [[order]]
   [[order.group]]
-    id = "pimhuisman/conanpack"
+    id = "bincraft/conanpack"
 
 [[order]]
   [[order.group]]
-    id = "pimhuisman/mesonpack"
+    id = "bincraft/mesonpack"
 
 [[order]]
   [[order.group]]
-    id = "pimhuisman/cmakepack"
+    id = "bincraft/cmakepack"
 
 [build]
-  image = "pimhuisman/hera-builder-base:jammy"
+  image = "bincraft/hera-builder-base:jammy"
 [run]
   [[run.images]]
-    image = "pimhuisman/hera-runner-base:jammy"
+    image = "bincraft/hera-runner-base:jammy"
 
 [stack]
-  id = "com.github.pimhuisman.stacks.hera"
-  build-image = "pimhuisman/hera-builder-base:jammy"
-  run-image = "pimhuisman/hera-runner-base:jammy"
+  id = "net.binarycraft.stacks.hera"
+  build-image = "bincraft/hera-builder-base:jammy"
+  run-image = "bincraft/hera-runner-base:jammy"
