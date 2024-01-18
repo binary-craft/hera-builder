@@ -23,6 +23,10 @@ The following tools are supported through these buildpacks:
 See the specific buildpacks for more details about the compilers, linkers and generators that they support.
 
 ## Building images with the builder
+Make sure to trust the builder to speed up build times:
+
+```pack config trusted-builders add bincraft/hera-builder:jammy```
+
 To use the builder issue a command as follows:
 
 ```pack build my-app -B bincraft/hera-builder:jammy```
